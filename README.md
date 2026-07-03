@@ -1,2 +1,3 @@
 # Sea
-Personal portfolio showcasing selected software engineering projects, technical skills, and professional experience.
+Personal portfolio repository showcasing selected software engineering projects, technical expertise, and professional experience.
+
