@@ -1,0 +1,90 @@
+{
+  "name": "Sea",
+  "role": "Full-Stack Engineer",
+  "tagline": "I build production-grade web applications end to end - from pixel-perfect frontends to resilient backends, payment flows, and the CI/CD pipelines that ship them.",
+  "quote": "Success is 99% hard work and 1% talent",
+  "location": "Remote - Worldwide",
+  "email": "sealion9847@gmail.com",
+  "phone": "",
+  "resumeUrl": "",
+  "socials": {
+    "github": "https://github.com/Sea872",
+    "linkedin": "",
+    "twitter": ""
+  },
+  "about": [
+    "I am a full-stack engineer focused on web applications and e-commerce. I work across the whole stack: React / Next.js and Vue / Nuxt on the frontend, Node.js, Python / Django, and PHP on the backend.",
+    "Beyond application code, I own the delivery side too: Docker and Kubernetes, GitOps with ArgoCD, and automated pipelines with GitHub Actions. I care about clean architecture, secure defaults, and code the next developer can read."
+  ],
+  "skills": [
+    {
+      "category": "Frontend",
+      "items": ["React", "Next.js", "Vue.js", "Nuxt", "TypeScript", "Tailwind CSS", "Redux"]
+    },
+    {
+      "category": "Backend",
+      "items": ["Node.js", "Express", "NestJS", "Python", "Django", "PHP", "GraphQL"]
+    },
+    {
+      "category": "E-Commerce & CMS",
+      "items": ["Shopify", "WordPress", "WooCommerce", "Stripe", "PayPal"]
+    },
+    {
+      "category": "Databases",
+      "items": ["PostgreSQL", "MySQL", "MongoDB", "Supabase", "Redis", "Prisma"]
+    },
+    {
+      "category": "DevOps & Cloud",
+      "items": ["Docker", "Kubernetes", "ArgoCD", "Terraform", "GitHub Actions", "AWS", "Vercel"]
+    },
+    {
+      "category": "Testing & Tools",
+      "items": ["Jest", "Cypress", "Playwright", "Pytest", "Git", "Jira"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Headless E-Commerce Storefront",
+      "description": "A high-performance storefront built on Next.js with the Shopify Storefront API. Stripe-powered checkout, ISR product pages, and Core Web Vitals in the green.",
+      "tech": ["Next.js", "TypeScript", "Shopify", "Stripe", "Tailwind CSS"],
+      "liveUrl": "",
+      "repoUrl": ""
+    },
+    {
+      "title": "SaaS Admin Dashboard",
+      "description": "A multi-tenant admin platform with role-based access control, real-time updates, and reporting. Django REST backend with a Vue 3 frontend.",
+      "tech": ["Vue.js", "Django", "PostgreSQL", "Redis", "WebSockets"],
+      "liveUrl": "",
+      "repoUrl": ""
+    },
+    {
+      "title": "GitOps Delivery Platform",
+      "description": "Kubernetes-based delivery setup with ArgoCD app-of-apps, sealed secrets, and GitHub Actions pipelines promoting builds from staging to production.",
+      "tech": ["Kubernetes", "ArgoCD", "Terraform", "GitHub Actions", "Helm"],
+      "liveUrl": "",
+      "repoUrl": ""
+    }
+  ],
+  "experience": [
+    {
+      "company": "Freelance / Contract",
+      "role": "Full-Stack Engineer",
+      "period": "2020 - Present",
+      "highlights": [
+        "Delivered e-commerce builds on Shopify and WooCommerce, including custom themes, apps, and payment integrations.",
+        "Designed and shipped REST and GraphQL APIs backed by PostgreSQL and MongoDB.",
+        "Set up CI/CD pipelines and Kubernetes deployments with GitOps workflows."
+      ]
+    },
+    {
+      "company": "Your Previous Company",
+      "role": "Software Engineer",
+      "period": "2017 - 2020",
+      "highlights": [
+        "Replace these bullet points with your real experience.",
+        "Each entry supports any number of highlight lines.",
+        "Edit src/data/site.json to change everything on this page."
+      ]
+    }
+  ]
+}
