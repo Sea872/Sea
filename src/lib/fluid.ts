@@ -20,15 +20,15 @@ export interface FluidSurface {
   destroy(): void;
 }
 
-const SIM_RES = 144;
-const DYE_RES = 512;
+const SIM_RES = 160;
+const DYE_RES = 704;
 const PRESSURE_ITERATIONS = 20;
-const VELOCITY_DISSIPATION = 0.5;
-const DYE_DISSIPATION = 2.8;
+const VELOCITY_DISSIPATION = 0.3;
+const DYE_DISSIPATION = 2.2;
 const PRESSURE_DECAY = 0.8;
-const CURL_STRENGTH = 13;
+const CURL_STRENGTH = 24;
 const SPLAT_FORCE = 4200;
-const SPLAT_RADIUS = 0.0018;
+const SPLAT_RADIUS = 0.0011;
 
 const VERT = `#version 300 es
 const vec2 POS[3] = vec2[3](vec2(-1.0, -1.0), vec2(3.0, -1.0), vec2(-1.0, 3.0));
