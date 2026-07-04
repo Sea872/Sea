@@ -23,12 +23,12 @@ export interface FluidSurface {
 const SIM_RES = 144;
 const DYE_RES = 512;
 const PRESSURE_ITERATIONS = 20;
-const VELOCITY_DISSIPATION = 0.22;
-const DYE_DISSIPATION = 1.1;
+const VELOCITY_DISSIPATION = 0.5;
+const DYE_DISSIPATION = 2.8;
 const PRESSURE_DECAY = 0.8;
-const CURL_STRENGTH = 26;
-const SPLAT_FORCE = 5200;
-const SPLAT_RADIUS = 0.0022;
+const CURL_STRENGTH = 13;
+const SPLAT_FORCE = 4200;
+const SPLAT_RADIUS = 0.0018;
 
 const VERT = `#version 300 es
 const vec2 POS[3] = vec2[3](vec2(-1.0, -1.0), vec2(3.0, -1.0), vec2(-1.0, 3.0));
@@ -190,13 +190,14 @@ out vec4 outColor;
 void main() {
   vec2 uv = v_uv;
 
-  // Chromatic split grows with local dye intensity, echoing lens fringing.
+  // A whisper of chromatic split, echoing light bending through water.
   float intensity = length(texture(u_dye, uv).rgb);
-  float off = 0.0012 + intensity * 0.0035;
+  float off = 0.0006 + intensity * 0.0014;
   float r = texture(u_dye, uv + vec2(off, 0.0)).r;
   float g = texture(u_dye, uv).g;
   float b = texture(u_dye, uv - vec2(off, 0.0)).b;
-  vec3 dye = vec3(r, g, b);
+  // Cool the mix toward blue so the wake always reads as water.
+  vec3 dye = vec3(r, g, b) * vec3(0.45, 0.85, 1.1);
 
   // Deep-sea base gradient.
   vec3 deep = vec3(0.004, 0.012, 0.028);
@@ -487,10 +488,10 @@ export function createFluidSurface(canvas: HTMLCanvasElement): FluidSurface | nu
     blit(velocity.write);
     velocity.swap();
 
-    // Dye in a slowly drifting cyan-blue hue.
-    hueBase += 0.0016;
-    const hue = 0.5 + 0.09 * Math.sin(hueBase * Math.PI * 2);
-    const [r, g, b] = hsv(hue, 0.85, 1);
+    // Dye locked to a watery cyan-blue band (never drifts into green).
+    hueBase += 0.0012;
+    const hue = 0.55 + 0.04 * Math.sin(hueBase * Math.PI * 2);
+    const [r, g, b] = hsv(hue, 0.7, 1);
     const power = s.power;
     gl!.uniform1i(splat.uniforms.u_target, bindTexture(0, dye.read.texture));
     gl!.uniform1f(splat.uniforms.u_radius, SPLAT_RADIUS * 1.15);
@@ -602,7 +603,7 @@ export function createFluidSurface(canvas: HTMLCanvasElement): FluidSurface | nu
   canvas.addEventListener("webglcontextlost", onContextLost);
 
   return {
-    splat(x, y, dx, dy, power = 0.28) {
+    splat(x, y, dx, dy, power = 0.1) {
       if (destroyed) return;
       if (pending.length > 24) pending.length = 24;
       pending.push({ x, y, dx, dy, power });
@@ -611,13 +612,13 @@ export function createFluidSurface(canvas: HTMLCanvasElement): FluidSurface | nu
       if (destroyed) return;
       for (let i = 0; i < 10; i++) {
         const angle = (i / 10) * Math.PI * 2;
-        const speed = 0.0035 + Math.random() * 0.002;
+        const speed = 0.0022 + Math.random() * 0.0012;
         pending.push({
           x,
           y,
           dx: Math.cos(angle) * speed,
           dy: Math.sin(angle) * speed,
-          power: 0.4,
+          power: 0.16,
         });
       }
     },
