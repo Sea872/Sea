@@ -24,6 +24,9 @@ export function WaterCanvas() {
     let lastX = -1;
     let lastY = -1;
     let lastMove = performance.now();
+    let lastSplatX = -1;
+    let lastSplatY = -1;
+    let lastSplatTime = 0;
 
     const toUv = (event: PointerEvent): { x: number; y: number } => {
       const rect = canvas.getBoundingClientRect();
@@ -35,16 +38,20 @@ export function WaterCanvas() {
 
     const onPointerMove = (event: PointerEvent) => {
       const { x, y } = toUv(event);
-      lastMove = performance.now();
+      const now = performance.now();
+      lastMove = now;
       if (lastX >= 0) {
-        const dx = x - lastX;
-        const dy = y - lastY;
-        const speed = Math.hypot(dx, dy);
-        if (speed > 0.0004) {
-          // Faster strokes displace more water, in a wider wake.
-          const strength = -Math.min(speed * 30, 1.1);
-          const radius = 0.015 + Math.min(speed * 0.5, 0.03);
+        const speed = Math.hypot(x - lastX, y - lastY);
+        const traveled = lastSplatX < 0 ? 1 : Math.hypot(x - lastSplatX, y - lastSplatY);
+        // Space splats out by distance and time so a stroke leaves one
+        // smooth broad wake instead of a chain of tiny ripples.
+        if (speed > 0.0006 && traveled > 0.015 && now - lastSplatTime > 55) {
+          const strength = -Math.min(speed * 12, 0.65);
+          const radius = 0.03 + Math.min(speed * 0.6, 0.05);
           surface.splash((x + lastX) / 2, (y + lastY) / 2, radius, strength);
+          lastSplatX = x;
+          lastSplatY = y;
+          lastSplatTime = now;
         }
       }
       lastX = x;
@@ -54,7 +61,7 @@ export function WaterCanvas() {
     const onPointerDown = (event: PointerEvent) => {
       const { x, y } = toUv(event);
       lastMove = performance.now();
-      surface.splash(x, y, 0.05, -1.8);
+      surface.splash(x, y, 0.06, -1.2);
     };
 
     const onPointerLeave = () => {
@@ -66,13 +73,13 @@ export function WaterCanvas() {
     host.addEventListener("pointerdown", onPointerDown);
     host.addEventListener("pointerleave", onPointerLeave);
 
-    // Ambient raindrops keep the surface alive when the pointer rests.
+    // Sparse, soft raindrops keep the surface alive when the pointer rests.
     const rain = window.setInterval(
       () => {
-        if (performance.now() - lastMove < 3000) return;
-        surface.splash(0.1 + Math.random() * 0.8, 0.15 + Math.random() * 0.7, 0.012, -0.5);
+        if (performance.now() - lastMove < 3500) return;
+        surface.splash(0.1 + Math.random() * 0.8, 0.15 + Math.random() * 0.7, 0.018, -0.35);
       },
-      2600 + Math.random() * 900,
+      4200 + Math.random() * 1600,
     );
 
     const observer = new IntersectionObserver(
