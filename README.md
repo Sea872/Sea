@@ -6,7 +6,7 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **Fluid cursor trail:** a real-time GPU fluid simulation (Navier-Stokes with vorticity confinement) runs behind the whole site. Mouse movement stirs swirling cyan-blue smoke that curls, drifts, and dissolves with a subtle chromatic split; clicks burst. The dye is advected through a pressure-projected velocity field, so the motion is genuinely fluid.
+- **Wavefront water surface:** a real-time GPU wave-equation simulation runs behind the whole site. The cursor acts as a disturbance source: it injects energy, and the wavefront propagates outward on its own while the surface only oscillates locally - true water-wave physics. The wave is rendered by deformation (refraction of the background and specular light on the slopes), not by color, so the color stays constant while the moving contour carries the motion.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
 - **Graceful degradation:** users with reduced-motion preferences (or without WebGL2) get a static deep-sea gradient; the simulation pauses when the tab is hidden.
 
