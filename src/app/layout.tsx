@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { WaveCanvas } from "@/components/wave-canvas";
-import { WaveTuner } from "@/components/wave-tuner";
+import { OceanBackground } from "@/components/ocean-background";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -38,9 +37,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-slate-950 text-slate-200">
-        <WaveCanvas />
+        <OceanBackground />
         {children}
-        <WaveTuner />
       </body>
     </html>
   );
