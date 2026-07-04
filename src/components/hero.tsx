@@ -6,17 +6,14 @@ import {
   MapPinIcon,
   XIcon,
 } from "@/components/icons";
-import { WaterCanvas } from "@/components/water-canvas";
 import { site } from "@/lib/site";
 
 export function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate flex min-h-[100svh] w-full touch-pan-y flex-col justify-center overflow-hidden"
+      className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
     >
-      <WaterCanvas />
-
       <div className="mx-auto w-full max-w-5xl px-4 pt-16 sm:px-6">
         <p className="rise rise-1 mb-3 text-sm font-medium tracking-widest text-cyan-400 uppercase">
           Hello, I am
