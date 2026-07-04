@@ -22,21 +22,21 @@ src/data/site.json
 
 Change the values there to update the whole site - no component edits needed:
 
-| Key          | What it controls                                      |
-| ------------ | ----------------------------------------------------- |
-| `name`       | Display name (header, hero, footer, page title)       |
-| `role`       | Job title shown in the hero and page title            |
-| `tagline`    | Hero paragraph and meta description                   |
-| `quote`      | Short quote under the hero (empty string to hide)     |
-| `location`   | Location shown in hero and contact                    |
-| `email`      | Contact email (mailto links)                          |
-| `phone`      | Phone number (hidden when empty)                      |
-| `resumeUrl`  | Resume link in contact (hidden when empty)            |
-| `socials`    | GitHub / LinkedIn / Twitter URLs (hidden when empty)  |
-| `about`      | Paragraphs in the About section                       |
-| `skills`     | Skill categories and their items                      |
-| `projects`   | Project cards (links hidden when empty)               |
-| `experience` | Experience timeline entries                           |
+| Key          | What it controls                                     |
+| ------------ | ---------------------------------------------------- |
+| `name`       | Display name (header, hero, footer, page title)      |
+| `role`       | Job title shown in the hero and page title           |
+| `tagline`    | Hero paragraph and meta description                  |
+| `quote`      | Short quote under the hero (empty string to hide)    |
+| `location`   | Location shown in hero and contact                   |
+| `email`      | Contact email (mailto links)                         |
+| `phone`      | Phone number (hidden when empty)                     |
+| `resumeUrl`  | Resume link in contact (hidden when empty)           |
+| `socials`    | GitHub / LinkedIn / Twitter URLs (hidden when empty) |
+| `about`      | Paragraphs in the About section                      |
+| `skills`     | Skill categories and their items                     |
+| `projects`   | Project cards (links hidden when empty)              |
+| `experience` | Experience timeline entries                          |
 
 Types for the config are defined in `src/lib/site.ts`.
 
