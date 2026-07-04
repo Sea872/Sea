@@ -34,12 +34,19 @@ export function FluidCanvas() {
       if (lastX >= 0) {
         const dx = x - lastX;
         const dy = y - lastY;
-        if (Math.hypot(dx, dy) > 0.0003) {
-          surface.splat(x, y, dx, dy);
+        const traveled = Math.hypot(dx, dy);
+        // Space injections out along the stroke and scale the dye with
+        // speed, so the wake stays a thin watery trace instead of flooding.
+        if (traveled > 0.004) {
+          const power = Math.min(0.04 + traveled * 6, 0.13);
+          surface.splat(x, y, dx, dy, power);
+          lastX = x;
+          lastY = y;
         }
+      } else {
+        lastX = x;
+        lastY = y;
       }
-      lastX = x;
-      lastY = y;
     };
 
     const onPointerDown = (event: PointerEvent) => {
