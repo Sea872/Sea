@@ -10,6 +10,8 @@
  * caller can fall back to a static background.
  */
 
+import { waveConfig } from "@/lib/wave-config";
+
 export interface WaterSurface {
   /** Push the water at uv (0..1, origin bottom-left) with a given strength. */
   splash(x: number, y: number, radius: number, strength: number): void;
@@ -37,6 +39,9 @@ uniform float u_aspect;
 uniform vec2 u_splatPos;
 uniform float u_splatRadius;
 uniform float u_splatStrength;
+uniform float u_waveSpeed;
+uniform float u_velDamp;
+uniform float u_heightDamp;
 in vec2 v_uv;
 out vec4 outColor;
 
@@ -53,10 +58,10 @@ void main() {
   // Wave equation: neighbours pull the column toward their average.
   // A lower coefficient makes waves travel slowly and gracefully.
   float lap = (l + r + b + t) * 0.25 - h;
-  v += lap * 1.25;
-  v *= 0.988;
+  v += lap * u_waveSpeed;
+  v *= u_velDamp;
   h += v;
-  h *= 0.9994;
+  h *= u_heightDamp;
 
   // Pointer press: displace the surface itself downward (a concave
   // dimple), with a small velocity share so it rebounds and radiates.
@@ -77,6 +82,10 @@ precision highp float;
 uniform sampler2D u_field;
 uniform vec2 u_texel;
 uniform float u_time;
+uniform float u_normalScale;
+uniform float u_refraction;
+uniform float u_ambientAmp;
+uniform float u_causticAmp;
 in vec2 v_uv;
 out vec4 outColor;
 
@@ -92,19 +101,19 @@ void main() {
   float hB = heightAt(uv - vec2(0.0, u_texel.y));
   float hT = heightAt(uv + vec2(0.0, u_texel.y));
 
-  vec3 n = normalize(vec3((hL - hR) * 5.0, (hB - hT) * 5.0, 1.0));
+  vec3 n = normalize(vec3((hL - hR) * u_normalScale, (hB - hT) * u_normalScale, 1.0));
 
   // Gentle ambient swell so the surface feels alive while idle.
   n.xy += vec2(
     sin(uv.y * 9.0 + u_time * 0.42) + sin(uv.x * 6.0 - u_time * 0.31),
     cos(uv.x * 8.0 - u_time * 0.37) + cos(uv.y * 5.0 + u_time * 0.27)
-  ) * 0.006;
+  ) * u_ambientAmp;
   n = normalize(n);
 
   // The wave is shown by DEFORMATION: the surface normals displace
   // (refract) everything behind the water, so the moving wavefront is
   // read from the bending of the background, not from color changes.
-  vec2 ruv = uv + n.xy * 0.16;
+  vec2 ruv = uv + n.xy * u_refraction;
   vec3 deep = vec3(0.004, 0.014, 0.032);
   vec3 mid = vec3(0.012, 0.052, 0.098);
   vec3 col = mix(deep, mid, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.5));
@@ -117,7 +126,7 @@ void main() {
   // bend, so wavefront contours stay legible on the smooth gradient.
   float ca = sin(ruv.x * 42.0 + u_time * 0.8) * sin(ruv.y * 34.0 - u_time * 0.6);
   ca += sin((ruv.x + ruv.y) * 26.0 + u_time * 0.45);
-  col += vec3(0.04, 0.12, 0.16) * max(ca, 0.0) * 0.07;
+  col += vec3(0.04, 0.12, 0.16) * max(ca, 0.0) * u_causticAmp;
 
   // Specular light on the wave slopes: a geometric cue, not a dye.
   vec3 lightDir = normalize(vec3(-0.35, 0.5, 0.8));
@@ -200,11 +209,18 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
     splatPos: gl.getUniformLocation(updateProgram, "u_splatPos"),
     splatRadius: gl.getUniformLocation(updateProgram, "u_splatRadius"),
     splatStrength: gl.getUniformLocation(updateProgram, "u_splatStrength"),
+    waveSpeed: gl.getUniformLocation(updateProgram, "u_waveSpeed"),
+    velDamp: gl.getUniformLocation(updateProgram, "u_velDamp"),
+    heightDamp: gl.getUniformLocation(updateProgram, "u_heightDamp"),
   };
   const uRender = {
     field: gl.getUniformLocation(renderProgram, "u_field"),
     texel: gl.getUniformLocation(renderProgram, "u_texel"),
     time: gl.getUniformLocation(renderProgram, "u_time"),
+    normalScale: gl.getUniformLocation(renderProgram, "u_normalScale"),
+    refraction: gl.getUniformLocation(renderProgram, "u_refraction"),
+    ambientAmp: gl.getUniformLocation(renderProgram, "u_ambientAmp"),
+    causticAmp: gl.getUniformLocation(renderProgram, "u_causticAmp"),
   };
 
   let simW = 0;
@@ -257,8 +273,10 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
     // The simulation runs on a much smaller grid than the drawing buffer:
     // coarse cells can only carry long wavelengths, which keeps the surface
     // made of broad, smooth waves instead of fine ripples.
-    const nextW = Math.min(224, Math.max(96, Math.round(canvas.clientWidth / 6)));
-    const nextH = Math.min(224, Math.max(96, Math.round(canvas.clientHeight / 6)));
+    const cap = waveConfig.gridCap;
+    const div = waveConfig.gridDivisor;
+    const nextW = Math.min(cap, Math.max(48, Math.round(canvas.clientWidth / div)));
+    const nextH = Math.min(cap, Math.max(48, Math.round(canvas.clientHeight / div)));
     if (nextW !== simW || nextH !== simH) {
       simW = nextW;
       simH = nextH;
@@ -284,6 +302,9 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
     gl!.uniform1i(uUpdate.field, 0);
     gl!.uniform2f(uUpdate.texel, 1 / simW, 1 / simH);
     gl!.uniform1f(uUpdate.aspect, simW / simH);
+    gl!.uniform1f(uUpdate.waveSpeed, waveConfig.waveSpeed);
+    gl!.uniform1f(uUpdate.velDamp, waveConfig.velocityDamping);
+    gl!.uniform1f(uUpdate.heightDamp, waveConfig.heightDamping);
     if (splat) {
       gl!.uniform2f(uUpdate.splatPos, splat.x, splat.y);
       gl!.uniform1f(uUpdate.splatRadius, splat.radius);
@@ -300,6 +321,10 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
     raf = requestAnimationFrame(frame);
     if (!active) return;
 
+    // Pick up live grid-resolution changes from the tuner (cheap when
+    // unchanged; reallocates only when the target size actually differs).
+    fit();
+
     gl!.bindVertexArray(vao);
 
     // One substep per frame keeps the wave motion slow and calm.
@@ -313,6 +338,10 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
     gl!.uniform1i(uRender.field, 0);
     gl!.uniform2f(uRender.texel, 1 / simW, 1 / simH);
     gl!.uniform1f(uRender.time, (performance.now() - start) / 1000);
+    gl!.uniform1f(uRender.normalScale, waveConfig.normalScale);
+    gl!.uniform1f(uRender.refraction, waveConfig.refraction);
+    gl!.uniform1f(uRender.ambientAmp, waveConfig.ambientAmp);
+    gl!.uniform1f(uRender.causticAmp, waveConfig.causticAmp);
     gl!.drawArrays(gl!.TRIANGLES, 0, 3);
   }
   raf = requestAnimationFrame(frame);
