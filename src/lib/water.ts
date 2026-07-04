@@ -51,11 +51,12 @@ void main() {
   float t = texture(u_field, v_uv + vec2(0.0, u_texel.y)).r;
 
   // Wave equation: neighbours pull the column toward their average.
+  // A lower coefficient makes waves travel slowly and gracefully.
   float lap = (l + r + b + t) * 0.25 - h;
-  v += lap * 1.9;
-  v *= 0.986;
+  v += lap * 1.25;
+  v *= 0.988;
   h += v;
-  h *= 0.9992;
+  h *= 0.9994;
 
   // Pointer splat: a gaussian kick to the velocity field.
   if (u_splatStrength != 0.0) {
@@ -89,7 +90,7 @@ void main() {
   float hB = heightAt(uv - vec2(0.0, u_texel.y));
   float hT = heightAt(uv + vec2(0.0, u_texel.y));
 
-  vec3 n = normalize(vec3((hL - hR) * 6.0, (hB - hT) * 6.0, 1.0));
+  vec3 n = normalize(vec3((hL - hR) * 7.5, (hB - hT) * 7.5, 1.0));
 
   // Gentle ambient swell so the surface feels alive while idle.
   n.xy += vec2(
@@ -298,8 +299,7 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
 
     gl!.bindVertexArray(vao);
 
-    // Two substeps per frame makes waves travel at a pleasing speed.
-    step(pendingSplats.shift());
+    // One substep per frame keeps the wave motion slow and calm.
     step(pendingSplats.shift());
 
     gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
