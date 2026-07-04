@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { createWaterSurface } from "@/lib/water";
+import { waveConfig } from "@/lib/wave-config";
 
 /**
  * Site-wide water surface. A fixed, full-viewport canvas sits behind all
@@ -44,9 +45,9 @@ export function WaveCanvas() {
         // The cursor is a disturbance source: press the surface at well
         // separated points so each press radiates one broad wavefront
         // instead of a chain of interfering ripples.
-        if (speed > 0.0006 && traveled > 0.03 && now - lastSplatTime > 90) {
-          const strength = -Math.min(0.35 + speed * 14, 1.3);
-          const radius = 0.06 + Math.min(speed * 0.8, 0.06);
+        if (speed > 0.0006 && traveled > waveConfig.strokeSpacing && now - lastSplatTime > 90) {
+          const strength = -Math.min(0.35 + speed * 14, waveConfig.strokeStrength);
+          const radius = waveConfig.strokeRadius + Math.min(speed * 0.8, 0.06);
           surface.splash((x + lastX) / 2, (y + lastY) / 2, radius, strength);
           lastSplatX = x;
           lastSplatY = y;
@@ -60,7 +61,7 @@ export function WaveCanvas() {
     const onPointerDown = (event: PointerEvent) => {
       const { x, y } = toUv(event);
       lastMove = performance.now();
-      surface.splash(x, y, 0.12, -2.0);
+      surface.splash(x, y, waveConfig.clickRadius, -waveConfig.clickStrength);
     };
 
     const onPointerLeave = () => {
