@@ -41,11 +41,12 @@ export function WaveCanvas() {
       if (lastX >= 0) {
         const speed = Math.hypot(x - lastX, y - lastY);
         const traveled = lastSplatX < 0 ? 1 : Math.hypot(x - lastSplatX, y - lastSplatY);
-        // The cursor is a disturbance source: inject energy at spaced
-        // points along the stroke and let the medium do the propagating.
-        if (speed > 0.0006 && traveled > 0.015 && now - lastSplatTime > 55) {
-          const strength = -Math.min(speed * 12, 0.65);
-          const radius = 0.03 + Math.min(speed * 0.6, 0.05);
+        // The cursor is a disturbance source: press the surface at well
+        // separated points so each press radiates one broad wavefront
+        // instead of a chain of interfering ripples.
+        if (speed > 0.0006 && traveled > 0.03 && now - lastSplatTime > 90) {
+          const strength = -Math.min(0.35 + speed * 14, 1.3);
+          const radius = 0.06 + Math.min(speed * 0.8, 0.06);
           surface.splash((x + lastX) / 2, (y + lastY) / 2, radius, strength);
           lastSplatX = x;
           lastSplatY = y;
@@ -59,7 +60,7 @@ export function WaveCanvas() {
     const onPointerDown = (event: PointerEvent) => {
       const { x, y } = toUv(event);
       lastMove = performance.now();
-      surface.splash(x, y, 0.06, -1.2);
+      surface.splash(x, y, 0.12, -2.0);
     };
 
     const onPointerLeave = () => {
@@ -73,14 +74,14 @@ export function WaveCanvas() {
 
     // A single opening drop so the page never loads dead still.
     const openingTimer = window.setTimeout(() => {
-      surface.splash(0.5, 0.6, 0.05, -1.0);
+      surface.splash(0.5, 0.6, 0.11, -1.6);
     }, 400);
 
     // Sparse, soft raindrops while the pointer rests.
     const rain = window.setInterval(
       () => {
         if (performance.now() - lastMove < 3500) return;
-        surface.splash(0.1 + Math.random() * 0.8, 0.15 + Math.random() * 0.7, 0.018, -0.35);
+        surface.splash(0.1 + Math.random() * 0.8, 0.15 + Math.random() * 0.7, 0.05, -0.8);
       },
       4200 + Math.random() * 1600,
     );
