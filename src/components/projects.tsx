@@ -1,0 +1,65 @@
+import { ExternalLinkIcon, GitHubIcon } from "@/components/icons";
+import { Section } from "@/components/section";
+import { site } from "@/lib/site";
+
+export function Projects() {
+  return (
+    <Section
+      id="projects"
+      title="Projects"
+      subtitle="A selection of things I have designed, built, and shipped."
+    >
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {site.projects.map((project) => (
+          <article
+            key={project.title}
+            className="flex flex-col rounded-xl border border-slate-800 bg-slate-900/50 p-5 transition-colors hover:border-cyan-500/40"
+          >
+            <h3 className="text-lg font-semibold text-slate-100">{project.title}</h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+              {project.description}
+            </p>
+
+            <ul className="mt-4 flex flex-wrap gap-1.5">
+              {project.tech.map((tech) => (
+                <li
+                  key={tech}
+                  className="rounded bg-cyan-500/10 px-2 py-0.5 text-xs font-medium text-cyan-300"
+                >
+                  {tech}
+                </li>
+              ))}
+            </ul>
+
+            {(project.liveUrl || project.repoUrl) && (
+              <div className="mt-4 flex items-center gap-4 border-t border-slate-800 pt-4">
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-cyan-400"
+                  >
+                    <ExternalLinkIcon className="h-4 w-4" />
+                    Live
+                  </a>
+                )}
+                {project.repoUrl && (
+                  <a
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-cyan-400"
+                  >
+                    <GitHubIcon className="h-4 w-4" />
+                    Code
+                  </a>
+                )}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </Section>
+  );
+}
