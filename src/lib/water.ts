@@ -58,12 +58,14 @@ void main() {
   h += v;
   h *= 0.9994;
 
-  // Pointer splat: a gaussian kick to the velocity field.
+  // Pointer press: displace the surface itself downward (a concave
+  // dimple), with a small velocity share so it rebounds and radiates.
   if (u_splatStrength != 0.0) {
     vec2 d = v_uv - u_splatPos;
     d.x *= u_aspect;
     float fall = exp(-dot(d, d) / (u_splatRadius * u_splatRadius));
-    v += u_splatStrength * fall;
+    h += u_splatStrength * fall;
+    v += u_splatStrength * 0.4 * fall;
   }
 
   h = clamp(h, -2.5, 2.5);
@@ -90,7 +92,7 @@ void main() {
   float hB = heightAt(uv - vec2(0.0, u_texel.y));
   float hT = heightAt(uv + vec2(0.0, u_texel.y));
 
-  vec3 n = normalize(vec3((hL - hR) * 7.5, (hB - hT) * 7.5, 1.0));
+  vec3 n = normalize(vec3((hL - hR) * 5.0, (hB - hT) * 5.0, 1.0));
 
   // Gentle ambient swell so the surface feels alive while idle.
   n.xy += vec2(
@@ -252,9 +254,11 @@ export function createWaterSurface(canvas: HTMLCanvasElement): WaterSurface | nu
       canvas.width = w;
       canvas.height = h;
     }
-    // The simulation runs on a smaller grid than the drawing buffer.
-    const nextW = Math.min(448, Math.max(128, Math.round(canvas.clientWidth / 3)));
-    const nextH = Math.min(448, Math.max(128, Math.round(canvas.clientHeight / 3)));
+    // The simulation runs on a much smaller grid than the drawing buffer:
+    // coarse cells can only carry long wavelengths, which keeps the surface
+    // made of broad, smooth waves instead of fine ripples.
+    const nextW = Math.min(224, Math.max(96, Math.round(canvas.clientWidth / 6)));
+    const nextH = Math.min(224, Math.max(96, Math.round(canvas.clientHeight / 6)));
     if (nextW !== simW || nextH !== simH) {
       simW = nextW;
       simH = nextH;
