@@ -6,7 +6,7 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **3D iridescent hero:** a real-time three.js scene fills the background - a morphing orb with thin-film iridescence floating in dark space. It eases its rotation toward the cursor, drifts with idle motion, and catches a rainbow from coloured light panels (a self-contained environment, no external HDR). Drifting sparkles add depth, and bloom makes the highlights glow.
+- **Interactive water surface:** a real-time GPU wave-equation simulation (WebGL2) fills the background. Pointer movement pushes the water and radiates ripples with natural physics; the surface is shaded with refraction, specular glints, and a caustic shimmer. When idle, ambient raindrops keep it alive.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
 - **Graceful degradation:** the 3D scene loads lazily and only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static deep-sea gradient.
 
@@ -15,7 +15,6 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 - **Framework:** Next.js 16 (App Router, static prerender, standalone output)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
-- **3D:** three.js via react-three-fiber, drei, and postprocessing (bloom)
 - **Quality:** ESLint + Prettier (with Tailwind class sorting)
 - **Container:** Docker (multi-stage build, non-root runner)
 
