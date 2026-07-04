@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { OceanBackground } from "@/components/ocean-background";
+import { HeroBackground } from "@/components/hero-background";
 import { site } from "@/lib/site";
 
 import "./globals.css";
@@ -37,7 +37,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col bg-slate-950 text-slate-200">
-        <OceanBackground />
+        <HeroBackground />
         {children}
       </body>
     </html>
