@@ -6,7 +6,7 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **3D ocean hero:** a real-time three.js ocean surface fills the background. The water is a tessellated plane displaced in the vertex shader by ambient swell plus mouse-driven ripple rings that radiate from the cursor. It is shaded as deep water with a sharp sun glint, a fresnel sky rim, and faint view-angle iridescence, finished with bloom on the glints and a cinematic vignette.
+- **3D iridescent hero:** a real-time three.js scene fills the background - a morphing orb with thin-film iridescence floating in dark space. It eases its rotation toward the cursor, drifts with idle motion, and catches a rainbow from coloured light panels (a self-contained environment, no external HDR). Drifting sparkles add depth, and bloom makes the highlights glow.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
 - **Graceful degradation:** the 3D scene loads lazily and only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static deep-sea gradient.
 
