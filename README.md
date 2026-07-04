@@ -6,15 +6,16 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **Wavefront water surface:** a real-time GPU wave-equation simulation runs behind the whole site. The cursor acts as a disturbance source: it injects energy, and the wavefront propagates outward on its own while the surface only oscillates locally - true water-wave physics. The wave is rendered by deformation (refraction of the background and specular light on the slopes), not by color, so the color stays constant while the moving contour carries the motion.
+- **3D ocean hero:** a real-time three.js ocean surface fills the background. The water is a tessellated plane displaced in the vertex shader by ambient swell plus mouse-driven ripple rings that radiate from the cursor. It is shaded as deep water with a sharp sun glint, a fresnel sky rim, and faint view-angle iridescence, finished with bloom on the glints and a cinematic vignette.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
-- **Graceful degradation:** users with reduced-motion preferences (or without WebGL2) get a static deep-sea gradient; the simulation pauses when the tab is hidden.
+- **Graceful degradation:** the 3D scene loads lazily and only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static deep-sea gradient.
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router, static prerender, standalone output)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
+- **3D:** three.js via react-three-fiber, drei, and postprocessing (bloom)
 - **Quality:** ESLint + Prettier (with Tailwind class sorting)
 - **Container:** Docker (multi-stage build, non-root runner)
 
