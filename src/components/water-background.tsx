@@ -5,11 +5,12 @@ import { useEffect, useRef } from "react";
 import { createWaterSurface } from "@/lib/water";
 
 /**
- * Full-bleed interactive water surface. Renders behind its parent's content;
- * pointer events are read from the parent element so text and buttons layered
- * above the canvas still drive the ripples.
+ * Site-wide interactive water surface (the original wave effect). A fixed,
+ * full-viewport canvas sits behind all content; pointer movement anywhere on
+ * the page pushes the water and radiates ripples. Falls back to a static
+ * gradient without WebGL2 or when the visitor prefers reduced motion.
  */
-export function WaterCanvas() {
+export function WaterBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -20,18 +21,14 @@ export function WaterCanvas() {
     const surface = createWaterSurface(canvas);
     if (!surface) return;
 
-    const host = canvas.parentElement ?? canvas;
     let lastX = -1;
     let lastY = -1;
     let lastMove = performance.now();
 
-    const toUv = (event: PointerEvent): { x: number; y: number } => {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: (event.clientX - rect.left) / rect.width,
-        y: 1 - (event.clientY - rect.top) / rect.height,
-      };
-    };
+    const toUv = (event: PointerEvent): { x: number; y: number } => ({
+      x: event.clientX / window.innerWidth,
+      y: 1 - event.clientY / window.innerHeight,
+    });
 
     const onPointerMove = (event: PointerEvent) => {
       const { x, y } = toUv(event);
@@ -62,9 +59,9 @@ export function WaterCanvas() {
       lastY = -1;
     };
 
-    host.addEventListener("pointermove", onPointerMove);
-    host.addEventListener("pointerdown", onPointerDown);
-    host.addEventListener("pointerleave", onPointerLeave);
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onPointerLeave);
 
     // Ambient raindrops keep the surface alive when the pointer rests.
     const rain = window.setInterval(
@@ -75,34 +72,32 @@ export function WaterCanvas() {
       2600 + Math.random() * 900,
     );
 
-    const observer = new IntersectionObserver(
-      ([entry]) => surface.setActive(entry.isIntersecting && !document.hidden),
-      { threshold: 0 },
-    );
-    observer.observe(canvas);
-
     const onVisibility = () => surface.setActive(!document.hidden);
     document.addEventListener("visibilitychange", onVisibility);
 
-    const resizer = new ResizeObserver(() => surface.resize());
-    resizer.observe(canvas);
+    let resizeTimer = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => surface.resize(), 180);
+    };
+    window.addEventListener("resize", onResize);
 
     return () => {
       window.clearInterval(rain);
-      observer.disconnect();
-      resizer.disconnect();
+      window.clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
-      host.removeEventListener("pointermove", onPointerMove);
-      host.removeEventListener("pointerdown", onPointerDown);
-      host.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerdown", onPointerDown);
+      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
       surface.destroy();
     };
   }, []);
 
   return (
-    <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
+    <div aria-hidden="true" className="fixed inset-0 -z-10">
       {/* Static deep-sea gradient: fallback and first paint before WebGL kicks in. */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_80%,#07243a_0%,#04101f_55%,#020617_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_85%,#062033_0%,#03101d_55%,#020617_100%)]" />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
     </div>
   );

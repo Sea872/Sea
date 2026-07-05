@@ -6,9 +6,9 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **Interactive water hero:** a real-time WebGL2 ripple simulation fills the landing screen. The cursor pushes the surface and generates waves with natural physics (GPU wave equation, refraction, specular light, caustic shimmer). Clicks splash; when idle, ambient raindrops keep the surface alive.
+- **Interactive water surface:** a real-time GPU wave-equation simulation (WebGL2) fills the background. Pointer movement pushes the water and radiates ripples with natural physics; the surface is shaded with refraction, specular glints, and a caustic shimmer. When idle, ambient raindrops keep it alive.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
-- **Graceful degradation:** users with reduced-motion preferences (or without WebGL2) get a static deep-sea gradient; the simulation pauses when offscreen or when the tab is hidden.
+- **Graceful degradation:** the 3D scene loads lazily and only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static deep-sea gradient.
 
 ## Tech Stack
 
