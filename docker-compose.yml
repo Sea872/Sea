@@ -6,5 +6,5 @@ services:
     image: sea-portfolio:latest
     container_name: sea-portfolio
     ports:
-      - "3000:3000"
+      - "3001:3001"
     restart: unless-stopped
