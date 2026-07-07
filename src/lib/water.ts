@@ -81,6 +81,21 @@ float heightAt(vec2 uv) {
   return texture(u_field, uv).r;
 }
 
+// The scene the water refracts: a dark surface with soft underwater light
+// pools and a faint drifting caustic, so ripples have something visible to
+// bend - which is what makes them read as clear water, not a flat tint.
+vec3 background(vec2 p) {
+  vec3 col = mix(vec3(0.015, 0.045, 0.080), vec3(0.020, 0.070, 0.120),
+                 clamp(1.0 - p.y, 0.0, 1.0));
+  col += vec3(0.06, 0.16, 0.22) *
+         smoothstep(0.6, 0.0, length((p - vec2(0.72, 0.62)) * vec2(1.4, 1.0)));
+  col += vec3(0.05, 0.12, 0.18) *
+         smoothstep(0.6, 0.0, length((p - vec2(0.24, 0.34)) * vec2(1.3, 1.0)));
+  float c = sin(p.x * 9.0 + u_time * 0.5) * sin(p.y * 7.5 - u_time * 0.4);
+  col += vec3(0.03, 0.07, 0.09) * max(c, 0.0) * 0.35;
+  return col;
+}
+
 void main() {
   vec2 uv = v_uv;
 
@@ -93,46 +108,35 @@ void main() {
   // Surface normal from the height field (z points up, out of the water).
   vec3 n = normalize(vec3((hL - hR) * 7.0, (hB - hT) * 7.0, 1.0));
 
-  // Broad, slow ambient swell so the resting surface still breathes.
-  n.xy += vec2(
-    sin(uv.y * 3.0 + u_time * 0.30) + sin(uv.x * 2.2 - u_time * 0.23),
-    cos(uv.x * 2.6 - u_time * 0.27) + cos(uv.y * 1.9 + u_time * 0.20)
-  ) * 0.008;
-  n = normalize(n);
+  // Refraction: the ripple slope bends what we see behind the water. A still
+  // surface bends nothing (clean); ripples reveal themselves by warping the
+  // background - which is what makes them read as real water.
+  vec2 refr = n.xy * 0.13;
 
-  // Fake perspective: the view grazes the surface toward the top of the
-  // screen (a horizon) and looks head-on near the bottom (the viewer), which
-  // is what makes the flat plane read as a receding 3D surface.
+  // Sample the background per channel with a tiny split (chromatic aberration)
+  // for a clean glassy fringe on the ripple edges.
+  vec3 col;
+  col.r = background(uv + refr * 1.08).r;
+  col.g = background(uv + refr).g;
+  col.b = background(uv + refr * 0.92).b;
+
+  // Grazing glassy sheen.
   float graze = clamp(uv.y, 0.0, 1.0);
-  vec3 viewDir = normalize(vec3(0.0, -mix(0.10, 1.25, graze), mix(1.55, 0.45, graze)));
+  vec3 viewDir = normalize(vec3(0.0, -mix(0.1, 1.1, graze), mix(1.6, 0.5, graze)));
+  float fres = pow(clamp(1.0 - max(dot(n, viewDir), 0.0), 0.0, 1.0), 4.0);
+  col = mix(col, vec3(0.06, 0.15, 0.22), fres * 0.4);
 
-  // Fresnel: grazing angles reflect the sky, head-on sees into the depths.
-  float fres = pow(clamp(1.0 - max(dot(n, viewDir), 0.0), 0.0, 1.0), 5.0);
-
-  // Transparent surface: we see the dark background refracted THROUGH the
-  // water instead of a filled colour. Clarity comes from crisp highlights and
-  // ripple lines, not a tint - so it reads as clean glass, never murky.
-  vec2 ruv = uv + n.xy * 0.09;
-  vec3 col = mix(vec3(0.010, 0.030, 0.055), vec3(0.020, 0.062, 0.098),
-                 pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.3));
-
-  // Faint cool reflection at grazing angles keeps it glassy, not flat.
-  col = mix(col, vec3(0.05, 0.12, 0.18), fres * 0.55);
-
-  // Crystal highlights: a crisp specular sparkle plus a small halo. On the
-  // dark transparent surface these clean glints are the main thing you see.
-  vec3 sunDir = normalize(vec3(-0.32, 0.5, 0.82));
+  // Crisp specular glints riding the ripple slopes.
+  vec3 sunDir = normalize(vec3(-0.3, 0.5, 0.82));
   vec3 halfVec = normalize(sunDir + viewDir);
   float ndh = max(dot(n, halfVec), 0.0);
-  col += vec3(0.80, 0.94, 1.0) * pow(ndh, 220.0) * 2.8;
-  col += vec3(0.16, 0.34, 0.44) * pow(ndh, 22.0) * 0.16;
+  col += vec3(0.85, 0.94, 1.0) * pow(ndh, 200.0) * 2.6;
 
-  // Clean bright rim along ripple edges - thin glassy lines that trace the
-  // waves, so the surface stays legible while remaining transparent.
+  // Bright rim tracing each ripple's edge (curvature of the height field).
   float curv = (hL + hR + hB + hT) * 0.25 - h;
-  col += vec3(0.14, 0.30, 0.42) * clamp(abs(curv) * 6.0, 0.0, 1.0) * 0.35;
+  col += vec3(0.24, 0.44, 0.55) * clamp(abs(curv) * 6.0, 0.0, 1.0) * 0.4;
 
-  // Very gentle vignette.
+  // Gentle vignette.
   vec2 vd = uv - vec2(0.5, 0.5);
   col *= mix(0.9, 1.0, smoothstep(1.2, 0.4, length(vd)));
 
