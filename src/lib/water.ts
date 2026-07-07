@@ -81,18 +81,14 @@ float heightAt(vec2 uv) {
   return texture(u_field, uv).r;
 }
 
-// The scene the water refracts: a dark surface with soft underwater light
-// pools and a faint drifting caustic, so ripples have something visible to
-// bend - which is what makes them read as clear water, not a flat tint.
+// The light surface the water refracts (like the reference's pale backdrop),
+// with gentle cool tints so ripples have contrast to bend.
 vec3 background(vec2 p) {
-  vec3 col = mix(vec3(0.015, 0.045, 0.080), vec3(0.020, 0.070, 0.120),
-                 clamp(1.0 - p.y, 0.0, 1.0));
-  col += vec3(0.06, 0.16, 0.22) *
-         smoothstep(0.6, 0.0, length((p - vec2(0.72, 0.62)) * vec2(1.4, 1.0)));
-  col += vec3(0.05, 0.12, 0.18) *
-         smoothstep(0.6, 0.0, length((p - vec2(0.24, 0.34)) * vec2(1.3, 1.0)));
-  float c = sin(p.x * 9.0 + u_time * 0.5) * sin(p.y * 7.5 - u_time * 0.4);
-  col += vec3(0.03, 0.07, 0.09) * max(c, 0.0) * 0.35;
+  vec3 col = mix(vec3(0.93, 0.95, 0.98), vec3(0.83, 0.87, 0.93), clamp(p.y, 0.0, 1.0));
+  col += vec3(0.03, 0.05, 0.07) *
+         smoothstep(0.7, 0.0, length((p - vec2(0.72, 0.62)) * vec2(1.4, 1.0)));
+  col -= vec3(0.05, 0.04, 0.02) *
+         smoothstep(0.7, 0.0, length((p - vec2(0.24, 0.34)) * vec2(1.3, 1.0)));
   return col;
 }
 
@@ -108,37 +104,34 @@ void main() {
   // Surface normal from the height field (z points up, out of the water).
   vec3 n = normalize(vec3((hL - hR) * 7.0, (hB - hT) * 7.0, 1.0));
 
-  // Refraction: the ripple slope bends what we see behind the water. A still
-  // surface bends nothing (clean); ripples reveal themselves by warping the
-  // background - which is what makes them read as real water.
-  vec2 refr = n.xy * 0.13;
-
-  // Sample the background per channel with a tiny split (chromatic aberration)
-  // for a clean glassy fringe on the ripple edges.
+  // Refraction: the ripple slope bends the light surface behind the water,
+  // sampled per channel with a tiny split for a glassy chromatic fringe.
+  vec2 refr = n.xy * 0.12;
   vec3 col;
   col.r = background(uv + refr * 1.08).r;
   col.g = background(uv + refr).g;
   col.b = background(uv + refr * 0.92).b;
 
-  // Grazing glassy sheen.
-  float graze = clamp(uv.y, 0.0, 1.0);
-  vec3 viewDir = normalize(vec3(0.0, -mix(0.1, 1.1, graze), mix(1.6, 0.5, graze)));
-  float fres = pow(clamp(1.0 - max(dot(n, viewDir), 0.0), 0.0, 1.0), 4.0);
-  col = mix(col, vec3(0.06, 0.15, 0.22), fres * 0.4);
+  // Normal shading: ripple slopes catch light and cast soft shade, which is
+  // what makes the waves visible on a plain light surface.
+  vec3 lightDir = normalize(vec3(-0.3, 0.5, 0.8));
+  col *= 1.0 + dot(n, lightDir) * 0.16;
 
-  // Crisp specular glints riding the ripple slopes.
-  vec3 sunDir = normalize(vec3(-0.3, 0.5, 0.82));
-  vec3 halfVec = normalize(sunDir + viewDir);
+  // A hint of cool water tint in the ripple troughs.
+  col = mix(col, col * vec3(0.86, 0.95, 1.06), clamp(-h * 0.4, 0.0, 0.35));
+
+  // Crisp white specular sparkle where slopes face the light.
+  vec3 halfVec = normalize(lightDir + vec3(0.0, 0.0, 1.0));
   float ndh = max(dot(n, halfVec), 0.0);
-  col += vec3(0.85, 0.94, 1.0) * pow(ndh, 200.0) * 2.6;
+  col += vec3(1.0) * pow(ndh, 220.0) * 0.7;
 
-  // Bright rim tracing each ripple's edge (curvature of the height field).
+  // Soft shaded rim on steep ripple edges for definition.
   float curv = (hL + hR + hB + hT) * 0.25 - h;
-  col += vec3(0.24, 0.44, 0.55) * clamp(abs(curv) * 6.0, 0.0, 1.0) * 0.4;
+  col -= vec3(0.10, 0.09, 0.07) * clamp(abs(curv) * 5.0, 0.0, 1.0) * 0.5;
 
-  // Gentle vignette.
+  // Very gentle vignette.
   vec2 vd = uv - vec2(0.5, 0.5);
-  col *= mix(0.9, 1.0, smoothstep(1.2, 0.4, length(vd)));
+  col *= mix(0.96, 1.0, smoothstep(1.3, 0.4, length(vd)));
 
   outColor = vec4(col, 1.0);
 }`;
