@@ -44,25 +44,100 @@
   ],
   "projects": [
     {
-      "title": "Headless E-Commerce Storefront",
-      "description": "A high-performance storefront built on Next.js with the Shopify Storefront API. Stripe-powered checkout, ISR product pages, and Core Web Vitals in the green.",
-      "tech": ["Next.js", "TypeScript", "Shopify", "Stripe", "Tailwind CSS"],
-      "liveUrl": "",
-      "repoUrl": ""
+      "title": "HiFirstDay - Vitamin Landing Page",
+      "description": "Conversion-focused product landing page for a teen supplement brand, built on Shopify with custom Liquid sections.",
+      "tech": ["Shopify", "Liquid", "HTML", "CSS"],
+      "liveUrl": "https://hifirstday.com/",
+      "repoUrl": "",
+      "image": "/projects/hifirstday-vitamin.webp"
     },
     {
-      "title": "SaaS Admin Dashboard",
-      "description": "A multi-tenant admin platform with role-based access control, real-time updates, and reporting. Django REST backend with a Vue 3 frontend.",
-      "tech": ["Vue.js", "Django", "PostgreSQL", "Redis", "WebSockets"],
-      "liveUrl": "",
-      "repoUrl": ""
+      "title": "zep.ro - Menu Customization",
+      "description": "Custom Shopify navigation and mega-menu customization for a lifestyle retailer.",
+      "tech": ["Shopify", "Liquid", "JavaScript"],
+      "liveUrl": "https://zep.ro",
+      "repoUrl": "",
+      "image": "/projects/zep-menu.webp"
     },
     {
-      "title": "GitOps Delivery Platform",
-      "description": "Kubernetes-based delivery setup with ArgoCD app-of-apps, sealed secrets, and GitHub Actions pipelines promoting builds from staging to production.",
-      "tech": ["Kubernetes", "ArgoCD", "Terraform", "GitHub Actions", "Helm"],
-      "liveUrl": "",
-      "repoUrl": ""
+      "title": "HiFirstDay - Store Design",
+      "description": "Full Shopify storefront design and theme build from the ground up.",
+      "tech": ["Shopify", "Liquid", "Theme Dev"],
+      "liveUrl": "https://hifirstday.com",
+      "repoUrl": "",
+      "image": "/projects/hifirstday-store.webp"
+    },
+    {
+      "title": "Loctote - Landing Page",
+      "description": "Shopify landing page design for Loctote's anti-theft gear, tuned for conversions.",
+      "tech": ["Shopify", "Liquid", "CSS"],
+      "liveUrl": "https://www.loctote.com",
+      "repoUrl": "",
+      "image": "/projects/loctote-landing.webp"
+    },
+    {
+      "title": "Loop Earplugs - Careers Page",
+      "description": "Careers landing page for Loop Earplugs, designed and built as a custom Shopify page.",
+      "tech": ["Shopify", "Liquid", "HTML"],
+      "liveUrl": "https://www.loopearplugs.com/pages/careers",
+      "repoUrl": "",
+      "image": "/projects/loopearplugs-careers.webp"
+    },
+    {
+      "title": "The Genius Brand - GemPages Landing",
+      "description": "High-converting story and landing page built with GemPages on Shopify.",
+      "tech": ["Shopify", "GemPages", "Liquid"],
+      "liveUrl": "https://www.thegeniusbrand.com/pages/the-genius-story",
+      "repoUrl": "",
+      "image": "/projects/geniusbrand-gempages.webp"
+    },
+    {
+      "title": "HeySilkySkin - Product Page",
+      "description": "Optimized product page design for HeySilkySkin's IPL hair-removal handset.",
+      "tech": ["Shopify", "Liquid", "CRO"],
+      "liveUrl": "https://www.heysilkyskin.com",
+      "repoUrl": "",
+      "image": "/projects/heysilkyskin-product.webp"
+    },
+    {
+      "title": "Nevica - Dropshipping Store",
+      "description": "End-to-end Shopify dropshipping store setup for Nevica, from theme to product pages.",
+      "tech": ["Shopify", "Dropshipping", "Liquid"],
+      "liveUrl": "https://www.nevicaonline.com",
+      "repoUrl": "",
+      "image": "/projects/nevica-store.webp"
+    },
+    {
+      "title": "Lifetime Leather - Store Design",
+      "description": "Full dropshipping store design and build on Shopify for Lifetime Leather.",
+      "tech": ["Shopify", "Dropshipping", "Theme Dev"],
+      "liveUrl": "https://www.lifetimeleather.com",
+      "repoUrl": "",
+      "image": "/projects/lifetimeleather-store.webp"
+    },
+    {
+      "title": "RASA - PageFly Landing",
+      "description": "Landing page designed and built with PageFly on Shopify for the RASA brand.",
+      "tech": ["Shopify", "PageFly", "Liquid"],
+      "liveUrl": "https://www.wearerasa.com",
+      "repoUrl": "",
+      "image": "/projects/wearerasa-pagefly.webp"
+    },
+    {
+      "title": "MINIMEIS - Home Page",
+      "description": "Home page design and theme customization on Shopify for MINIMEIS.",
+      "tech": ["Shopify", "Liquid", "CSS"],
+      "liveUrl": "https://www.minimeis.com",
+      "repoUrl": "",
+      "image": "/projects/minimeis-home.webp"
+    },
+    {
+      "title": "Pan-n-Ice - Landing Page",
+      "description": "Shopify landing page design for Pan-n-Ice, matching their playful brand.",
+      "tech": ["Shopify", "Liquid", "HTML"],
+      "liveUrl": "https://www.pan-n-ice.co.uk",
+      "repoUrl": "",
+      "image": "/projects/pan-n-ice-landing.webp"
     }
   ],
   "experience": [

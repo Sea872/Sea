@@ -17,6 +17,8 @@ export interface Project {
   tech: string[];
   liveUrl: string;
   repoUrl: string;
+  /** Path under /public, e.g. "/projects/foo.webp". Empty string = no image. */
+  image: string;
 }
 
 export interface ExperienceItem {
