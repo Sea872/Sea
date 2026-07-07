@@ -53,7 +53,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3001.
 
 ## Scripts
 
@@ -75,7 +75,7 @@ docker compose up --build
 
 # Or plain Docker
 docker build -t sea-portfolio .
-docker run -p 3000:3000 sea-portfolio
+docker run -p 3001:3001 sea-portfolio
 ```
 
-The image uses Next.js standalone output and runs as a non-root user on port 3000.
+The image uses Next.js standalone output and runs as a non-root user on port 3001.
