@@ -14,7 +14,7 @@ export function Hero() {
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
     >
-      <div className="mx-auto w-full max-w-5xl px-4 pt-16 sm:px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
         <p className="rise rise-1 mb-3 text-sm font-medium tracking-widest text-cyan-400 uppercase">
           Hello, I am
         </p>

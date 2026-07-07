@@ -32,7 +32,7 @@ export function Header() {
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="#top" className="text-lg font-bold tracking-tight text-slate-100">
           {site.name}
           <span className="text-cyan-400">.</span>
