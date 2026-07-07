@@ -28,6 +28,12 @@ export interface ExperienceItem {
   highlights: string[];
 }
 
+export interface Float {
+  label: string;
+  /** Emoji shown on the boat's label pill. */
+  icon: string;
+}
+
 export interface SiteConfig {
   name: string;
   role: string;
@@ -42,6 +48,8 @@ export interface SiteConfig {
   skills: SkillGroup[];
   projects: Project[];
   experience: ExperienceItem[];
+  /** Skill/certification labels that sail across the water on little boats. */
+  floats: Float[];
 }
 
 // All personal data lives in src/data/site.json - edit that file to change
