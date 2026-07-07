@@ -70,8 +70,8 @@ for (const [skill, key] of Object.entries(map)) {
     missing.push(`${skill} (${key})`);
     continue;
   }
-  // Logos too dark for the dark cards fall back to slate-200.
-  const color = luminance(icon.hex) < 0.16 ? "e2e8f0" : icon.hex;
+  // Logos too light for the light cards fall back to slate-700.
+  const color = luminance(icon.hex) > 0.7 ? "334155" : icon.hex;
   out[skill] = { path: icon.path, color: `#${color}` };
 }
 
