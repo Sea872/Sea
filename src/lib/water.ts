@@ -111,18 +111,18 @@ void main() {
 
   // Refracted water body, graded by depth; troughs darker, crests brighter.
   vec2 ruv = uv + n.xy * 0.12;
-  vec3 deep = vec3(0.003, 0.012, 0.028);
-  vec3 shallow = vec3(0.014, 0.072, 0.120);
-  vec3 water = mix(deep, shallow, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.4));
-  water *= 0.72 + 0.55 * clamp(h * 0.5 + 0.5, 0.0, 1.0);
+  vec3 deep = vec3(0.012, 0.045, 0.082);
+  vec3 shallow = vec3(0.045, 0.150, 0.225);
+  vec3 water = mix(deep, shallow, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.3));
+  water *= 0.86 + 0.4 * clamp(h * 0.5 + 0.5, 0.0, 1.0);
 
   // Caustics, only where we can see into the water (troughs, low fresnel).
   float ca = sin(ruv.x * 15.0 + u_time * 0.7) * sin(ruv.y * 12.0 - u_time * 0.5);
   ca += 0.6 * sin((ruv.x + ruv.y) * 9.0 + u_time * 0.4);
   water += vec3(0.02, 0.08, 0.11) * max(ca, 0.0) * (1.0 - fres) * 0.10;
 
-  // Muted teal sky reflection (keeps the dark theme while adding a horizon).
-  vec3 sky = mix(vec3(0.03, 0.10, 0.18), vec3(0.10, 0.24, 0.36), graze);
+  // Teal sky reflection (keeps the dark theme while adding a lighter horizon).
+  vec3 sky = mix(vec3(0.07, 0.19, 0.30), vec3(0.20, 0.40, 0.55), graze);
   vec3 col = mix(water, sky, fres * 0.9);
 
   // Subsurface glow through the wave crests (light passing through the tips).
@@ -137,11 +137,11 @@ void main() {
   col += vec3(0.14, 0.34, 0.44) * pow(ndh, 30.0) * 0.30;
 
   // Horizon haze so the far surface melts into the sky.
-  col = mix(col, vec3(0.08, 0.18, 0.27), smoothstep(0.6, 1.0, uv.y) * 0.45);
+  col = mix(col, vec3(0.16, 0.30, 0.42), smoothstep(0.6, 1.0, uv.y) * 0.45);
 
-  // Vignette to pull focus toward the content.
+  // Gentle vignette to pull focus toward the content (kept light).
   vec2 vd = uv - vec2(0.5, 0.48);
-  col *= mix(0.7, 1.0, smoothstep(1.15, 0.35, length(vd)));
+  col *= mix(0.84, 1.0, smoothstep(1.2, 0.4, length(vd)));
 
   outColor = vec4(col, 1.0);
 }`;
