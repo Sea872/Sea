@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+import { WaterBoats } from "@/components/water-boats";
 import { createWaterSurface } from "@/lib/water";
 
 /**
@@ -99,6 +100,7 @@ export function WaterBackground() {
       {/* Static deep-sea gradient: fallback and first paint before WebGL kicks in. */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_85%,#062033_0%,#03101d_55%,#020617_100%)]" />
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <WaterBoats />
     </div>
   );
 }
