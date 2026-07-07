@@ -109,33 +109,34 @@ void main() {
   // Fresnel: grazing angles reflect the sky, head-on sees into the depths.
   float fres = pow(clamp(1.0 - max(dot(n, viewDir), 0.0), 0.0, 1.0), 5.0);
 
-  // Refracted water body: a clear tropical turquoise, graded by depth.
-  vec2 ruv = uv + n.xy * 0.14;
-  vec3 deep = vec3(0.02, 0.28, 0.34);
-  vec3 shallow = vec3(0.12, 0.56, 0.56);
-  vec3 water = mix(deep, shallow, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.2));
-  water *= 0.9 + 0.22 * clamp(h * 0.5 + 0.5, 0.0, 1.0);
+  // Refracted water body: crystal-clear glass, refracting a bright bottom.
+  // Strong refraction + a light, low-saturation tint reads as see-through.
+  vec2 ruv = uv + n.xy * 0.19;
+  vec3 deep = vec3(0.08, 0.34, 0.40);
+  vec3 shallow = vec3(0.40, 0.74, 0.74);
+  vec3 water = mix(deep, shallow, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.05));
+  water *= 0.95 + 0.12 * clamp(h * 0.5 + 0.5, 0.0, 1.0);
 
-  // Bright caustic veins - the signature light network of clear shallow water.
-  float c1 = sin(ruv.x * 18.0 + u_time * 0.9) + sin(ruv.y * 15.0 - u_time * 0.7);
-  float c2 = sin((ruv.x - ruv.y) * 13.0 + u_time * 0.6) + sin((ruv.x + ruv.y) * 11.0 - u_time * 0.5);
-  float caustic = pow(max(c1 * 0.25 + c2 * 0.25 + 0.5, 0.0), 3.0);
-  water += vec3(0.22, 0.5, 0.5) * caustic * (1.0 - fres * 0.5) * 0.5;
+  // Crisp, bright caustic veins - the light network seen through clear water.
+  float c1 = sin(ruv.x * 20.0 + u_time * 0.9) + sin(ruv.y * 17.0 - u_time * 0.7);
+  float c2 = sin((ruv.x - ruv.y) * 14.0 + u_time * 0.6) + sin((ruv.x + ruv.y) * 12.0 - u_time * 0.5);
+  float caustic = pow(max(c1 * 0.25 + c2 * 0.25 + 0.5, 0.0), 3.5);
+  water += vec3(0.4, 0.6, 0.6) * caustic * (1.0 - fres * 0.4) * 0.6;
 
-  // Bright sky reflection at grazing angles (clear-day blue).
-  vec3 sky = mix(vec3(0.18, 0.44, 0.60), vec3(0.44, 0.68, 0.84), graze);
-  vec3 col = mix(water, sky, fres * 0.85);
+  // Glassy sky reflection at grazing angles (full fresnel for a mirror sheen).
+  vec3 sky = mix(vec3(0.32, 0.58, 0.72), vec3(0.60, 0.80, 0.92), graze);
+  vec3 col = mix(water, sky, fres);
 
   // Subsurface glow through the wave crests (light passing through the tips).
   float sss = clamp(h, 0.0, 1.5);
-  col += vec3(0.10, 0.30, 0.30) * sss * sss * 0.5;
+  col += vec3(0.16, 0.34, 0.34) * sss * sss * 0.5;
 
   // Sun glint: a sharp specular plus a soft blooming halo around it.
   vec3 sunDir = normalize(vec3(-0.35, 0.55, 0.75));
   vec3 halfVec = normalize(sunDir + viewDir);
   float ndh = max(dot(n, halfVec), 0.0);
-  col += vec3(0.55, 0.85, 1.0) * pow(ndh, 260.0) * 2.4;
-  col += vec3(0.14, 0.34, 0.44) * pow(ndh, 30.0) * 0.30;
+  col += vec3(0.75, 0.95, 1.0) * pow(ndh, 300.0) * 3.0;
+  col += vec3(0.22, 0.42, 0.5) * pow(ndh, 26.0) * 0.35;
 
   // Horizon haze so the far surface melts into a bright sky.
   col = mix(col, vec3(0.34, 0.56, 0.68), smoothstep(0.6, 1.0, uv.y) * 0.4);
