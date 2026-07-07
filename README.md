@@ -6,16 +6,15 @@ Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
 ## Experience
 
-- **3D crystal glass hero:** a real-time three.js scene fills the background - a glass blob rendered with a transmission material, so light truly refracts through it (with chromatic aberration) and reflects off coloured light panels. It eases toward the cursor and turns slowly, floating in dark space with bloom on the highlights.
+- **Transparent crystal water:** a real-time GPU wave-equation simulation (WebGL2) fills the background. Pointer movement pushes the water and radiates ripples; it is rendered as a clean, see-through glassy surface - the dark background shows through it, and the ripples read through crisp specular highlights and bright edge lines rather than a colour fill.
 - **Motion with restraint:** staggered entrance animation, scroll-reveal sections, glass header that materializes on scroll, and hover micro-interactions throughout.
-- **Graceful degradation:** the 3D scene loads lazily and only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static gradient.
+- **Graceful degradation:** the effect runs only when WebGL2 is available; visitors who prefer reduced motion (or lack WebGL2) get a static gradient.
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router, static prerender, standalone output)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
-- **3D:** three.js via react-three-fiber, drei (transmission material, environment), and postprocessing (bloom)
 - **Quality:** ESLint + Prettier (with Tailwind class sorting)
 - **Container:** Docker (multi-stage build, non-root runner)
 
