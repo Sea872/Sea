@@ -14,7 +14,12 @@ export function Hero() {
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
+      {/* Soft dark halo behind the copy so text stays readable over the bright water. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_65%_75%_at_22%_50%,rgba(2,10,22,0.82),transparent_72%)]"
+      />
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
         <p className="rise rise-1 mb-3 text-sm font-medium tracking-widest text-cyan-400 uppercase">
           Hello, I am
         </p>
