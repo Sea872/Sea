@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/reveal";
 import { Section } from "@/components/section";
 import { site } from "@/lib/site";
+import { skillIcons } from "@/lib/skill-icons";
 
 export function Skills() {
   return (
@@ -17,14 +18,27 @@ export function Skills() {
                 {group.category}
               </h3>
               <ul className="mt-3 flex flex-wrap gap-2">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-md bg-slate-800/80 px-2.5 py-1 text-sm text-slate-300 transition-colors hover:bg-slate-700/80 hover:text-cyan-300"
-                  >
-                    {item}
-                  </li>
-                ))}
+                {group.items.map((item) => {
+                  const icon = skillIcons[item];
+                  return (
+                    <li
+                      key={item}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-slate-800/80 px-2.5 py-1 text-sm text-slate-300 transition-colors hover:bg-slate-700/80 hover:text-cyan-300"
+                    >
+                      {icon && (
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="h-3.5 w-3.5 shrink-0"
+                          fill={icon.color}
+                          aria-hidden="true"
+                        >
+                          <path d={icon.path} />
+                        </svg>
+                      )}
+                      {item}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </Reveal>
