@@ -15,7 +15,7 @@ export function Projects() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {site.projects.map((project, index) => (
           <Reveal key={project.title} delay={index * 80} className="h-full">
-            <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-[0_8px_30px_rgba(8,145,178,0.14)]">
+            <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white/70 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-[0_8px_30px_rgba(8,145,178,0.14)]">
               {project.image && (
                 <a
                   href={project.liveUrl || undefined}
@@ -30,13 +30,13 @@ export function Projects() {
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
-                  <span className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                  <span className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent" />
                 </a>
               )}
 
               <div className="flex flex-1 flex-col p-5">
-                <h3 className="text-lg font-semibold text-slate-100">{project.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                <h3 className="text-lg font-semibold text-slate-900">{project.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
                   {project.description}
                 </p>
 
@@ -44,7 +44,7 @@ export function Projects() {
                   {project.tech.map((tech) => (
                     <li
                       key={tech}
-                      className="rounded bg-cyan-500/10 px-2 py-0.5 text-xs font-medium text-cyan-300"
+                      className="rounded bg-cyan-100 px-2 py-0.5 text-xs font-medium text-cyan-700"
                     >
                       {tech}
                     </li>
@@ -52,13 +52,13 @@ export function Projects() {
                 </ul>
 
                 {(project.liveUrl || project.repoUrl) && (
-                  <div className="mt-4 flex items-center gap-4 border-t border-slate-800 pt-4">
+                  <div className="mt-4 flex items-center gap-4 border-t border-slate-200 pt-4">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-cyan-400"
+                        className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition-colors hover:text-cyan-600"
                       >
                         <ExternalLinkIcon className="h-4 w-4" />
                         Live
@@ -69,7 +69,7 @@ export function Projects() {
                         href={project.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm text-slate-300 transition-colors hover:text-cyan-400"
+                        className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition-colors hover:text-cyan-600"
                       >
                         <GitHubIcon className="h-4 w-4" />
                         Code

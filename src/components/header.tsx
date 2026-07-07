@@ -28,14 +28,14 @@ export function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
         scrolled
-          ? "border-slate-800/60 bg-slate-950/80 backdrop-blur"
+          ? "border-slate-200 bg-white/80 backdrop-blur"
           : "border-transparent bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="#top" className="text-lg font-bold tracking-tight text-slate-100">
+        <Link href="#top" className="text-lg font-bold tracking-tight text-slate-900">
           {site.name}
-          <span className="text-cyan-400">.</span>
+          <span className="text-cyan-600">.</span>
         </Link>
 
         <nav className="hidden items-center gap-6 sm:flex" aria-label="Main">
@@ -43,7 +43,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm text-slate-400 transition-colors hover:text-cyan-400"
+              className="text-sm text-slate-600 transition-colors hover:text-cyan-600"
             >
               {link.label}
             </a>
@@ -56,7 +56,7 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub profile"
-            className="text-slate-400 transition-all hover:scale-110 hover:text-cyan-400"
+            className="text-slate-600 transition-all hover:scale-110 hover:text-cyan-600"
           >
             <GitHubIcon className="h-5 w-5" />
           </a>

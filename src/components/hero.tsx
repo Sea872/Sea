@@ -14,23 +14,18 @@ export function Hero() {
       id="top"
       className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-hidden"
     >
-      {/* Soft dark halo behind the copy so text stays readable over the bright water. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_65%_75%_at_22%_50%,rgba(2,10,22,0.82),transparent_72%)]"
-      />
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
-        <p className="rise rise-1 mb-3 text-sm font-medium tracking-widest text-cyan-400 uppercase">
+      <div className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6">
+        <p className="rise rise-1 mb-3 text-sm font-medium tracking-widest text-cyan-600 uppercase">
           Hello, I am
         </p>
-        <h1 className="rise rise-2 text-5xl font-bold tracking-tight text-slate-50 drop-shadow-[0_2px_18px_rgba(8,47,73,0.9)] sm:text-7xl">
+        <h1 className="rise rise-2 text-5xl font-bold tracking-tight text-slate-900 sm:text-7xl">
           {site.name}
         </h1>
-        <h2 className="rise rise-2 mt-3 text-2xl font-semibold text-slate-300 sm:text-3xl">
+        <h2 className="rise rise-2 mt-3 text-2xl font-semibold text-slate-700 sm:text-3xl">
           {site.role}
         </h2>
 
-        <p className="rise rise-3 mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
+        <p className="rise rise-3 mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
           {site.tagline}
         </p>
 
@@ -42,25 +37,25 @@ export function Hero() {
         <div className="rise rise-4 mt-8 flex flex-wrap items-center gap-4">
           <a
             href={`mailto:${site.email}`}
-            className="rounded-lg bg-cyan-500 px-5 py-2.5 text-sm font-semibold text-slate-950 transition-all hover:bg-cyan-400 hover:shadow-[0_0_24px_rgba(34,211,238,0.35)] active:scale-95"
+            className="rounded-lg bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-cyan-500 hover:shadow-[0_0_24px_rgba(8,145,178,0.35)] active:scale-95"
           >
             Get in touch
           </a>
           <a
             href="#projects"
-            className="rounded-lg border border-slate-600/80 bg-slate-950/30 px-5 py-2.5 text-sm font-semibold text-slate-200 backdrop-blur-sm transition-all hover:border-cyan-400 hover:text-cyan-400 active:scale-95"
+            className="rounded-lg border border-slate-300 bg-white/60 px-5 py-2.5 text-sm font-semibold text-slate-700 backdrop-blur-sm transition-all hover:border-cyan-500 hover:text-cyan-600 active:scale-95"
           >
             View my work
           </a>
 
-          <div className="ml-1 flex items-center gap-4 text-slate-400">
+          <div className="ml-1 flex items-center gap-4 text-slate-500">
             {site.socials.github && (
               <a
                 href={site.socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="transition-all hover:scale-110 hover:text-cyan-400"
+                className="transition-all hover:scale-110 hover:text-cyan-600"
               >
                 <GitHubIcon className="h-5 w-5" />
               </a>
@@ -71,7 +66,7 @@ export function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="transition-all hover:scale-110 hover:text-cyan-400"
+                className="transition-all hover:scale-110 hover:text-cyan-600"
               >
                 <LinkedInIcon className="h-5 w-5" />
               </a>
@@ -82,7 +77,7 @@ export function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="X (Twitter)"
-                className="transition-all hover:scale-110 hover:text-cyan-400"
+                className="transition-all hover:scale-110 hover:text-cyan-600"
               >
                 <XIcon className="h-5 w-5" />
               </a>
@@ -90,7 +85,7 @@ export function Hero() {
             <a
               href={`mailto:${site.email}`}
               aria-label="Email"
-              className="transition-all hover:scale-110 hover:text-cyan-400"
+              className="transition-all hover:scale-110 hover:text-cyan-600"
             >
               <MailIcon className="h-5 w-5" />
             </a>
@@ -107,7 +102,7 @@ export function Hero() {
       <a
         href="#about"
         aria-label="Scroll to content"
-        className="rise rise-5 absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-400 transition-colors hover:text-cyan-400"
+        className="rise rise-5 absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-500 transition-colors hover:text-cyan-600"
       >
         <span className="cue-bob block">
           <ChevronDownIcon className="h-7 w-7" />

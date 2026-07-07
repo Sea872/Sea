@@ -13,8 +13,8 @@ export function Skills() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {site.skills.map((group, index) => (
           <Reveal key={group.category} delay={index * 70}>
-            <div className="h-full rounded-xl border border-slate-800 bg-slate-900/50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-[0_8px_30px_rgba(8,145,178,0.12)]">
-              <h3 className="text-sm font-semibold tracking-wide text-cyan-400 uppercase">
+            <div className="h-full rounded-xl border border-slate-200 bg-white/70 p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-[0_8px_30px_rgba(8,145,178,0.14)]">
+              <h3 className="text-sm font-semibold tracking-wide text-cyan-600 uppercase">
                 {group.category}
               </h3>
               <ul className="mt-3 flex flex-wrap gap-2">
@@ -23,7 +23,7 @@ export function Skills() {
                   return (
                     <li
                       key={item}
-                      className="inline-flex items-center gap-1.5 rounded-md bg-slate-800/80 px-2.5 py-1 text-sm text-slate-300 transition-colors hover:bg-slate-700/80 hover:text-cyan-300"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1 text-sm text-slate-700 transition-colors hover:bg-cyan-50 hover:text-cyan-700"
                     >
                       {icon && (
                         <svg
