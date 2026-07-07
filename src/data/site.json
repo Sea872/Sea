@@ -161,13 +161,5 @@
         "Edit src/data/site.json to change everything on this page."
       ]
     }
-  ],
-  "floats": [
-    { "label": "Shopify Partner", "icon": "🛒" },
-    { "label": "Liquid", "icon": "💧" },
-    { "label": "React", "icon": "⚛️" },
-    { "label": "Next.js", "icon": "🔺" },
-    { "label": "TypeScript", "icon": "🔷" },
-    { "label": "Node.js", "icon": "🟢" }
   ]
 }
