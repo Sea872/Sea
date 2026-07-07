@@ -84,49 +84,64 @@ float heightAt(vec2 uv) {
 void main() {
   vec2 uv = v_uv;
 
+  float h  = heightAt(uv);
   float hL = heightAt(uv - vec2(u_texel.x, 0.0));
   float hR = heightAt(uv + vec2(u_texel.x, 0.0));
   float hB = heightAt(uv - vec2(0.0, u_texel.y));
   float hT = heightAt(uv + vec2(0.0, u_texel.y));
 
-  vec3 n = normalize(vec3((hL - hR) * 6.0, (hB - hT) * 6.0, 1.0));
+  // Surface normal from the height field (z points up, out of the water).
+  vec3 n = normalize(vec3((hL - hR) * 7.0, (hB - hT) * 7.0, 1.0));
 
-  // Gentle ambient swell so the surface feels alive while idle.
+  // Broad, slow ambient swell so the resting surface still breathes.
   n.xy += vec2(
-    sin(uv.y * 9.0 + u_time * 0.42) + sin(uv.x * 6.0 - u_time * 0.31),
-    cos(uv.x * 8.0 - u_time * 0.37) + cos(uv.y * 5.0 + u_time * 0.27)
-  ) * 0.006;
+    sin(uv.y * 3.0 + u_time * 0.30) + sin(uv.x * 2.2 - u_time * 0.23),
+    cos(uv.x * 2.6 - u_time * 0.27) + cos(uv.y * 1.9 + u_time * 0.20)
+  ) * 0.008;
   n = normalize(n);
 
-  // Refract the deep-sea gradient through the surface.
-  vec2 ruv = uv + n.xy * 0.10;
-  vec3 deep = vec3(0.004, 0.014, 0.032);
-  vec3 mid = vec3(0.012, 0.052, 0.098);
-  vec3 col = mix(deep, mid, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.5));
+  // Fake perspective: the view grazes the surface toward the top of the
+  // screen (a horizon) and looks head-on near the bottom (the viewer), which
+  // is what makes the flat plane read as a receding 3D surface.
+  float graze = clamp(uv.y, 0.0, 1.0);
+  vec3 viewDir = normalize(vec3(0.0, -mix(0.10, 1.25, graze), mix(1.55, 0.45, graze)));
 
-  // Soft cyan glow pooling under the light.
-  vec2 g = (ruv - vec2(0.5, 0.78)) * vec2(1.5, 1.0);
-  col += vec3(0.015, 0.09, 0.14) * exp(-dot(g, g) * 3.0);
+  // Fresnel: grazing angles reflect the sky, head-on sees into the depths.
+  float fres = pow(clamp(1.0 - max(dot(n, viewDir), 0.0), 0.0, 1.0), 5.0);
 
-  // Caustic shimmer drifting through the refracted background.
-  float ca = sin(ruv.x * 42.0 + u_time * 0.8) * sin(ruv.y * 34.0 - u_time * 0.6);
-  ca += sin((ruv.x + ruv.y) * 26.0 + u_time * 0.45);
-  col += vec3(0.04, 0.12, 0.16) * max(ca, 0.0) * 0.07;
+  // Refracted water body, graded by depth; troughs darker, crests brighter.
+  vec2 ruv = uv + n.xy * 0.12;
+  vec3 deep = vec3(0.003, 0.012, 0.028);
+  vec3 shallow = vec3(0.014, 0.072, 0.120);
+  vec3 water = mix(deep, shallow, pow(clamp(1.0 - ruv.y, 0.0, 1.0), 1.4));
+  water *= 0.72 + 0.55 * clamp(h * 0.5 + 0.5, 0.0, 1.0);
 
-  // Blinn-Phong specular glint from a high key light.
-  vec3 lightDir = normalize(vec3(-0.35, 0.5, 0.8));
-  vec3 halfVec = normalize(lightDir + vec3(0.0, 0.0, 1.0));
-  float spec = pow(max(dot(n, halfVec), 0.0), 110.0);
-  col += vec3(0.35, 0.72, 0.82) * spec;
+  // Caustics, only where we can see into the water (troughs, low fresnel).
+  float ca = sin(ruv.x * 15.0 + u_time * 0.7) * sin(ruv.y * 12.0 - u_time * 0.5);
+  ca += 0.6 * sin((ruv.x + ruv.y) * 9.0 + u_time * 0.4);
+  water += vec3(0.02, 0.08, 0.11) * max(ca, 0.0) * (1.0 - fres) * 0.10;
 
-  // Faint rim light on ripple crests.
-  float crest = (hL + hR + hB + hT) * 0.25;
-  col += vec3(0.05, 0.20, 0.26) * clamp(crest * 3.0, 0.0, 1.0) * 0.35;
+  // Muted teal sky reflection (keeps the dark theme while adding a horizon).
+  vec3 sky = mix(vec3(0.03, 0.10, 0.18), vec3(0.10, 0.24, 0.36), graze);
+  vec3 col = mix(water, sky, fres * 0.9);
+
+  // Subsurface glow through the wave crests (light passing through the tips).
+  float sss = clamp(h, 0.0, 1.5);
+  col += vec3(0.04, 0.16, 0.18) * sss * sss * 0.5;
+
+  // Sun glint: a sharp specular plus a soft blooming halo around it.
+  vec3 sunDir = normalize(vec3(-0.35, 0.55, 0.75));
+  vec3 halfVec = normalize(sunDir + viewDir);
+  float ndh = max(dot(n, halfVec), 0.0);
+  col += vec3(0.55, 0.85, 1.0) * pow(ndh, 260.0) * 2.4;
+  col += vec3(0.14, 0.34, 0.44) * pow(ndh, 30.0) * 0.30;
+
+  // Horizon haze so the far surface melts into the sky.
+  col = mix(col, vec3(0.08, 0.18, 0.27), smoothstep(0.6, 1.0, uv.y) * 0.45);
 
   // Vignette to pull focus toward the content.
-  vec2 vd = uv - vec2(0.5, 0.45);
-  float vig = smoothstep(1.2, 0.3, length(vd));
-  col *= mix(0.72, 1.0, vig);
+  vec2 vd = uv - vec2(0.5, 0.48);
+  col *= mix(0.7, 1.0, smoothstep(1.15, 0.35, length(vd)));
 
   outColor = vec4(col, 1.0);
 }`;
